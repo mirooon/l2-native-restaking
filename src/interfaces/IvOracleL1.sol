@@ -4,7 +4,7 @@ pragma solidity ^0.8.26;
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 
-interface IvOracle {
+interface IvOracleL1 {
     /**
      * @notice Updates the oracle address for a given token.
      * @param token The ERC20 token address whose oracle address is to be updated.

@@ -7,21 +7,19 @@ import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/U
 import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {IvOracle} from "../interfaces/IvOracle.sol";
+import {IvOracleL1} from "../../interfaces/IvOracleL1.sol";
+import {vOracleCommonConstants} from "../vOracleCommon.sol";
 
-abstract contract vOracleConstants {
+abstract contract vOracleL1Constants is vOracleCommonConstants {
     /// @dev Represents a scaling factor used for all price values, defined as 10^18.
     uint256 constant SCALE_FACTOR = 10 ** 18;
-
-    /// @dev Specifies the maximum allowable time interval, in seconds, for a price feed to be considered current. Beyond this duration, feeds are considered stale.
-    uint256 constant MAX_TIME_WINDOW = 86400; // 24 hours
 }
-abstract contract vOracleVariables is vOracleConstants {
+abstract contract vOracleL1Variables is vOracleL1Constants {
     /// @dev A mapping that links each supported ERC20 token address to its corresponding Chainlink oracle address.
     mapping(IERC20 => AggregatorV3Interface) public tokenOracleLookup;
 }
 
-abstract contract vOracleErrors {
+abstract contract vOracleL1Errors {
     /// @dev Thrown when a function receives a zero address where a valid address is expected.
     error vOracle__InvalidZeroAddress();
 
@@ -44,19 +42,19 @@ abstract contract vOracleErrors {
     error vOracle__InvalidAmount();
 }
 
-abstract contract vOracleEvents {
+abstract contract vOracleL1Events {
     /// @dev Emitted when an oracle address is updated for a token.
     event LogOracleUpdated(IERC20 token, AggregatorV3Interface oracleAddress);
 }
 
 contract vOracle is
-    IvOracle,
+    IvOracleL1,
     Initializable,
     OwnableUpgradeable,
     UUPSUpgradeable,
-    vOracleEvents,
-    vOracleErrors,
-    vOracleVariables
+    vOracleL1Events,
+    vOracleL1Errors,
+    vOracleL1Variables
 {
     using Math for uint256;
     /// @dev Prevents implementation contract from being initialized.
@@ -89,7 +87,7 @@ contract vOracle is
         emit LogOracleUpdated(_token, _oracleAddress);
     }
 
-    /// @inheritdoc IvOracle
+    /// @inheritdoc IvOracleL1
     function lookupTokenValue(
         IERC20 _token,
         uint256 _balance
@@ -99,7 +97,7 @@ contract vOracle is
         return uint256(price).mulDiv(_balance, SCALE_FACTOR);
     }
 
-    /// @inheritdoc IvOracle
+    /// @inheritdoc IvOracleL1
     function lookupTokenAmountFromValue(
         IERC20 _token,
         uint256 _value
@@ -165,7 +163,7 @@ contract vOracle is
         return mintAmount;
     }
 
-    /// @inheritdoc IvOracle
+    /// @inheritdoc IvOracleL1
     function calculateRedeemAmount(
         uint256 tokensBurned,
         uint256 totalSupply,

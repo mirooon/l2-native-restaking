@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.26;
 
 import {Ownable} from "lib/openzeppelin-contracts/contracts/access/Ownable.sol";
@@ -8,11 +8,11 @@ import {IStakingManager} from "../../interfaces/IStakingManager.sol";
 
 import "forge-std/console2.sol";
 
-abstract contract Constants {
+abstract contract vETHOFTConstants {
     /// @dev TODO netspec
     IStakingManager immutable STAKING_MANAGER;
 }
-contract vETHOFT is OFT, Constants {
+contract vETHOFT_L1 is OFT, vETHOFTConstants {
     constructor(
         string memory _name,
         string memory _symbol,

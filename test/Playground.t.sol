@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.26;
 
-import {vETHOFT as vETHOFT_L1} from "../src/tokens/l1/vETHOFT.sol";
-import {vETHOFT as vETHOFT_L2} from "../src/tokens/l2/vETHOFT.sol";
+import {vETHOFT_L1} from "../src/tokens/l1/vETHOFT_L1.sol";
+import {vETHOFT_L2} from "../src/tokens/l2/vETHOFT_L2.sol";
 
 // OApp imports
 import {IOAppOptionsType3, EnforcedOptionParam} from "@layerzerolabs/lz-evm-oapp-v2/contracts/oapp/libs/OAppOptionsType3.sol";
@@ -29,8 +29,10 @@ import {TransparentUpgradeableProxy} from "lib/openzeppelin-contracts/contracts/
 
 import {IStakingProtocol} from "../src/interfaces/IStakingProtocol.sol";
 import {IStakingManager} from "../src/interfaces/IStakingManager.sol";
+import {IvOracleL2} from "../src/interfaces/IvOracleL2.sol";
 import {StakingProtocolMock} from "../src/mocks/StakingProtocolMock.sol";
 import {StakingManagerMock} from "../src/mocks/StakingManagerMock.sol";
+import {vOracleL2} from "../src/oracle/l2/vOracleL2.sol";
 
 contract PlaygroundTest is TestHelperOz5 {
     using OptionsBuilder for bytes;
@@ -46,6 +48,7 @@ contract PlaygroundTest is TestHelperOz5 {
 
     IStakingProtocol stakingProtocol = new StakingProtocolMock();
     IStakingManager stakingManager = new StakingManagerMock(stakingProtocol);
+    IvOracleL2 oracleL2 = new vOracleL2();
 
     function setUp() public virtual override {
         vm.deal(userA, 1000 ether);
@@ -76,7 +79,8 @@ contract PlaygroundTest is TestHelperOz5 {
                         "vETH",
                         "vETH",
                         address(endpoints[bEid]),
-                        address(this)
+                        address(this),
+                        oracleL2
                     )
                 )
             )
@@ -86,7 +90,7 @@ contract PlaygroundTest is TestHelperOz5 {
         address[] memory ofts = new address[](2);
         ofts[0] = address(l1vETH);
         ofts[1] = address(l2vETH);
-        this.wireOApps(ofts); // TODO only to one direction L2 -> L1?
+        this.wireOApps(ofts);
     }
 
     function test_deposit_l2_oft() public {
@@ -94,7 +98,7 @@ contract PlaygroundTest is TestHelperOz5 {
 
         vm.prank(userA);
         assertEq(address(l2vETH).balance, 0);
-        l2vETH.depositETH{value: ethToDeposit}(userA);
+        l2vETH.depositETH{value: ethToDeposit}(userA, 0, block.timestamp);
 
         // ========================== This part can be moved to depositETH function directly to remove explicit 'send' =================
         bytes memory options = OptionsBuilder
@@ -102,7 +106,7 @@ contract PlaygroundTest is TestHelperOz5 {
             .addExecutorLzReceiveOption(200000, ethToDeposit);
         SendParam memory sendParam = SendParam(
             aEid,
-            addressToBytes32(address(0xCAFE)), // doesnt matter - can be restricted to same address
+            bytes32(0),
             ethToDeposit,
             ethToDeposit,
             options,
