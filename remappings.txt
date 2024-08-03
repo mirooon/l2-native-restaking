@@ -1,0 +1,9 @@
+@chainlink/contracts/=node_modules/@chainlink/contracts/
+@layerzerolabs/lz-evm-oapp-v2/contracts/=node_modules/@layerzerolabs/lz-evm-oapp-v2/contracts/
+@layerzerolabs/lz-evm-protocol-v2/contracts/=node_modules/@layerzerolabs/lz-evm-protocol-v2/contracts/
+@layerzerolabs/lz-evm-messagelib-v2/contracts/=node_modules/@layerzerolabs/lz-evm-messagelib-v2/contracts/
+@layerzerolabs/lz-evm-oapp-v2/contracts-upgradeable/=node_modules/layerzero-v2/oapp/contracts/
+@layerzerolabs/test-devtools-evm-foundry/=node_modules/@layerzerolabs/test-devtools-evm-foundry/
+@layerzerolabs/lz-evm-v1-0.7/=node_modules/@layerzerolabs/lz-evm-v1-0.7/
+solidity-bytes-utils/contracts/=node_modules/solidity-bytes-utils/contracts/
+
