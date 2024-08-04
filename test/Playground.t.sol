@@ -27,11 +27,11 @@ import {TestHelperOz5} from "@layerzerolabs/test-devtools-evm-foundry/contracts/
 
 import {TransparentUpgradeableProxy} from "lib/openzeppelin-contracts/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 
-import {IStakingProtocol} from "../src/interfaces/IStakingProtocol.sol";
+import {IRestakingProtocol} from "../src/interfaces/IRestakingProtocol.sol";
 import {IRestakingManager} from "../src/interfaces/IRestakingManager.sol";
 import {IvOracleL2} from "../src/interfaces/IvOracleL2.sol";
-import {StakingProtocolMock} from "../src/mocks/StakingProtocolMock.sol";
-import {StakingManagerMock} from "../src/mocks/StakingManagerMock.sol";
+import {RestakingProtocolMock} from "../src/mocks/RestakingProtocolMock.sol";
+import {RestakingManagerMock} from "../src/mocks/RestakingManagerMock.sol";
 import {vOracleL2} from "../src/oracle/l2/vOracleL2.sol";
 
 contract PlaygroundTest is TestHelperOz5 {
@@ -46,9 +46,9 @@ contract PlaygroundTest is TestHelperOz5 {
     address public userA = address(0x1);
     uint256 public initialBalance = 100 ether;
 
-    IStakingProtocol stakingProtocol = new StakingProtocolMock();
+    IRestakingProtocol stakingProtocol = new RestakingProtocolMock();
     IRestakingManager restakingManager =
-        new StakingManagerMock(stakingProtocol);
+        new RestakingManagerMock(stakingProtocol);
     IvOracleL2 oracleL2 = new vOracleL2();
 
     function setUp() public virtual override {
@@ -132,7 +132,7 @@ contract PlaygroundTest is TestHelperOz5 {
 
         assertEq(address(l2vETH).balance, ethToDeposit);
         assertEq(address(stakingProtocol).balance, ethToDeposit);
-        assertEq(address(stakingManager).balance, 0);
+        assertEq(address(restakingManager).balance, 0);
         assertEq(l2vETH.balanceOf(userA), ethToDeposit);
         assertEq(address(l2vETH).balance, ethToDeposit);
     }

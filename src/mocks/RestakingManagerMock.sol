@@ -25,6 +25,6 @@ contract RestakingManagerMock is IRestakingManager {
     }
 
     function claimRewards() public {
-        stakingProtocol.claimRewards();
+        restakingProtocol.claimRewards();
     }
 }
