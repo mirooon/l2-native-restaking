@@ -4,13 +4,13 @@ pragma solidity ^0.8.26;
 import {Ownable} from "lib/openzeppelin-contracts/contracts/access/Ownable.sol";
 import {OFT} from "@layerzerolabs/lz-evm-oapp-v2/contracts/oft/OFT.sol";
 import {SendParam} from "@layerzerolabs/lz-evm-oapp-v2/contracts/oft/OFTCore.sol";
-import {IStakingManager} from "../../interfaces/IStakingManager.sol";
+import {IRestakingManager} from "../../interfaces/IRestakingManager.sol";
 
 import "forge-std/console2.sol";
 
 abstract contract vETHOFTConstants {
     /// @dev TODO netspec
-    IStakingManager immutable STAKING_MANAGER;
+    IRestakingManager immutable RESTAKING_MANAGER;
 }
 contract vETHOFT_L1 is OFT, vETHOFTConstants {
     constructor(
@@ -18,9 +18,9 @@ contract vETHOFT_L1 is OFT, vETHOFTConstants {
         string memory _symbol,
         address _lzEndpoint,
         address _delegate,
-        IStakingManager _stakingManager
+        IRestakingManager _restakingManager
     ) Ownable(_delegate) OFT(_name, _symbol, _lzEndpoint, _delegate) {
-        STAKING_MANAGER = _stakingManager;
+        RESTAKING_MANAGER = _restakingManager;
     }
     function _debit(
         address,
@@ -46,7 +46,7 @@ contract vETHOFT_L1 is OFT, vETHOFTConstants {
         uint256 _amountLD,
         uint32 /*_srcEid*/
     ) internal override returns (uint256 amountReceivedLD) {
-        STAKING_MANAGER.stake{value: _amountLD}();
+        RESTAKING_MANAGER.stake{value: _amountLD}();
         return _amountLD;
     }
 }

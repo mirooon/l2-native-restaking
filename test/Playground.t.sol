@@ -28,7 +28,7 @@ import {TestHelperOz5} from "@layerzerolabs/test-devtools-evm-foundry/contracts/
 import {TransparentUpgradeableProxy} from "lib/openzeppelin-contracts/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 
 import {IStakingProtocol} from "../src/interfaces/IStakingProtocol.sol";
-import {IStakingManager} from "../src/interfaces/IStakingManager.sol";
+import {IRestakingManager} from "../src/interfaces/IRestakingManager.sol";
 import {IvOracleL2} from "../src/interfaces/IvOracleL2.sol";
 import {StakingProtocolMock} from "../src/mocks/StakingProtocolMock.sol";
 import {StakingManagerMock} from "../src/mocks/StakingManagerMock.sol";
@@ -47,7 +47,8 @@ contract PlaygroundTest is TestHelperOz5 {
     uint256 public initialBalance = 100 ether;
 
     IStakingProtocol stakingProtocol = new StakingProtocolMock();
-    IStakingManager stakingManager = new StakingManagerMock(stakingProtocol);
+    IRestakingManager restakingManager =
+        new StakingManagerMock(stakingProtocol);
     IvOracleL2 oracleL2 = new vOracleL2();
 
     function setUp() public virtual override {
@@ -65,7 +66,7 @@ contract PlaygroundTest is TestHelperOz5 {
                         "vETH",
                         address(endpoints[aEid]),
                         address(this),
-                        stakingManager
+                        restakingManager
                     )
                 )
             )
